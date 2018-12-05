@@ -26,7 +26,8 @@ import static me.kaveenk.twitterapiexample.MainMenu.mouseDownCompCoords;
 public class SingularDisplayPane extends javax.swing.JFrame {
 
     private static String name;
-    private static String message;
+    private static String s_message;
+    private String message;
     private static String date;
 
     /**
@@ -38,6 +39,7 @@ public class SingularDisplayPane extends javax.swing.JFrame {
         this.date = date;
 
         message = message.substring(message.lastIndexOf(") ") + 1).trim();
+        this.s_message = message;
         this.message = message;
 
         this.setUndecorated(true);
@@ -59,12 +61,12 @@ public class SingularDisplayPane extends javax.swing.JFrame {
     }
 
     private void stylize() {
-        dateLabel.setBackground(new Color(50,204,254));
+        dateLabel.setBackground(new Color(50, 204, 254));
         dateLabel.setOpaque(true);
-        tweetArea.setBackground(new Color(128,223,255));
-        minimizeButton.setBackground(new Color(50,204,254));
-        exitButton.setBackground(new Color(50,204,254));
-        
+        tweetArea.setBackground(new Color(128, 223, 255));
+        minimizeButton.setBackground(new Color(50, 204, 254));
+        exitButton.setBackground(new Color(50, 204, 254));
+
     }
 
     private void initMouseListener() {
@@ -139,6 +141,40 @@ public class SingularDisplayPane extends javax.swing.JFrame {
         tweetArea.setColumns(20);
         tweetArea.setRows(5);
         tweetArea.setDisabledTextColor(new java.awt.Color(38, 38, 38));
+        tweetArea.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tweetAreaFocusGained(evt);
+            }
+        });
+        tweetArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tweetAreaMouseClicked(evt);
+            }
+        });
+        tweetArea.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                tweetAreaInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                tweetAreaCaretPositionChanged(evt);
+            }
+        });
+        tweetArea.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tweetAreaPropertyChange(evt);
+            }
+        });
+        tweetArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tweetAreaKeyTyped(evt);
+            }
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tweetAreaKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tweetAreaKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tweetArea);
 
         handleLabel.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
@@ -210,12 +246,52 @@ public class SingularDisplayPane extends javax.swing.JFrame {
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         this.dispose();
-        
+
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void minimizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizeButtonActionPerformed
         this.setState(JFrame.ICONIFIED);
     }//GEN-LAST:event_minimizeButtonActionPerformed
+
+    private void tweetAreaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tweetAreaFocusGained
+        
+        tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaFocusGained
+
+    private void tweetAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tweetAreaMouseClicked
+        evt.consume();
+        tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaMouseClicked
+
+    private void tweetAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tweetAreaKeyPressed
+       // evt.consume();
+       // tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaKeyPressed
+
+    private void tweetAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tweetAreaKeyReleased
+        // evt.consume();
+        //tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaKeyReleased
+
+    private void tweetAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tweetAreaKeyTyped
+         evt.consume();
+        tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaKeyTyped
+
+    private void tweetAreaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_tweetAreaInputMethodTextChanged
+         evt.consume();
+        tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaInputMethodTextChanged
+
+    private void tweetAreaCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_tweetAreaCaretPositionChanged
+      evt.consume();
+        tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaCaretPositionChanged
+
+    private void tweetAreaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tweetAreaPropertyChange
+         
+        tweetArea.setText(this.message);
+    }//GEN-LAST:event_tweetAreaPropertyChange
 
     /**
      * @param args the command line arguments
@@ -247,7 +323,7 @@ public class SingularDisplayPane extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SingularDisplayPane(name, message).setVisible(true);
+                new SingularDisplayPane(name, s_message).setVisible(true);
             }
         });
     }
