@@ -13,6 +13,9 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -25,13 +28,15 @@ import twitter4j.conf.ConfigurationBuilder;
 public class MainMenu extends javax.swing.JFrame {
 
     private static Twitter twitter;
+    private static ArrayList<String> staticTweetList;
+    private static String name;
 
     /**
      * Creates new form MainMenu
      */
     public MainMenu() {
         initComponents();
-        // tweetsList.setVisibleRowCount(3);
+        this.setResizable(false);
         initialize();
 
     }
@@ -43,7 +48,7 @@ public class MainMenu extends javax.swing.JFrame {
                 .setOAuthConsumerKey("71Kw7SX1GwEelZH5Emg474Z6h")
                 .setOAuthConsumerSecret("CYTRfqXl75jJdJ1mCplupiExkzsNXpw2LMc7BTwFrSKCSzU98P")
                 .setOAuthAccessToken("713033676938981376-DoNznmVksWKbVRPzeEaHNjESbhN6zPz")
-                .setOAuthAccessTokenSecret("kyEn7NRXE6Q8U0OHMsqv7pEKkc6iRYF27uVhfelV1Emw2");
+                .setOAuthAccessTokenSecret("kyEn7NRXE6Q8U0OHMsqv7pEKkc6iRYF27uVhfelV1Emw2").setTweetModeExtended(true);
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
 
@@ -53,10 +58,13 @@ public class MainMenu extends javax.swing.JFrame {
         ArrayList<String> timelineList = new ArrayList<String>();
         try {
             twitter.getUserTimeline(user).stream().forEach(item -> {
-                timelineList.add("(" + item.getCreatedAt().toString() + ") " + item.getText());
-
+                if (item.isRetweet()) {
+                    timelineList.add("(" + item.getCreatedAt().toString() + ") " + item.getRetweetedStatus().getText());
+                } else {
+                    timelineList.add("(" + item.getCreatedAt().toString() + ") " + item.getText());
+                }
             });
-
+            staticTweetList = timelineList;
             return timelineList;
 
         } catch (TwitterException ex) {
@@ -82,10 +90,10 @@ public class MainMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        tweetsList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        tweetsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tweetsListMouseClicked(evt);
+            }
         });
         tweetScrollPane.setViewportView(tweetsList);
 
@@ -137,11 +145,23 @@ public class MainMenu extends javax.swing.JFrame {
         for (String s : getTweets(searchField.getText())) {
             model.addElement(s);
         }
+        this.name = "@" + searchField.getText();
 
         tweetsList.setModel(model);
 
 
     }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void tweetsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tweetsListMouseClicked
+        if (evt.getClickCount() == 2) {
+            JList source = (JList) evt.getSource();
+            int index = source.getSelectedIndex();
+
+            new SingularDisplayPane(name, staticTweetList.get(index)).setVisible(true);
+
+        }
+
+    }//GEN-LAST:event_tweetsListMouseClicked
 
     /**
      * @param args the command line arguments
