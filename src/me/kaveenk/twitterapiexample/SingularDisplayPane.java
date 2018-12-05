@@ -16,6 +16,7 @@ public class SingularDisplayPane extends javax.swing.JFrame {
     private static String name;
     private static String message;
     private static String date;
+    
 
     /**
      * Creates new form SingularDisplayPane
@@ -29,15 +30,15 @@ public class SingularDisplayPane extends javax.swing.JFrame {
         this.message = message;
 
         initComponents();
+        this.setLocationRelativeTo(null);
+        
         tweetArea.setEnabled(false);
         tweetArea.setLineWrap(true);
         tweetArea.setWrapStyleWord(true);
         
         tweetArea.setText(message);
         dateLabel.setText(date);
-        dateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         handleLabel.setText(name);
-        handleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     }
 
